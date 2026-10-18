@@ -6,29 +6,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pt.utp.estg.pp.printhub.entity.Produto;
-import pt.utp.estg.pp.printhub.repository.ProdutoRepository;
+import pt.utp.estg.pp.printhub.entity.Product;
+import pt.utp.estg.pp.printhub.repository.ProductRepository;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
-public class ProdutoController {
+public class ProductController {
 
-    private final ProdutoRepository produtoRepository;
+    private final ProductRepository productRepository;
 
-    public ProdutoController(ProdutoRepository produtoRepository) {
-        this.produtoRepository = produtoRepository;
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @GetMapping
-    public List<Produto> listarProdutos() {
-        return produtoRepository.findAll();
+    public List<Product> listProducts() {
+        return productRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> obterProduto(@PathVariable Integer id) {
-        return produtoRepository.findById(id)
+    public ResponseEntity<Product> getProduct(@PathVariable Integer id) {
+        return productRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

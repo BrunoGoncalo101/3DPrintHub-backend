@@ -20,7 +20,7 @@ public class MaterialController {
     }
 
     @GetMapping
-    public List<Material> listarMateriais() {
+    public List<Material> listMaterials() {
         return materialRepository.findAll();
     }
 }
