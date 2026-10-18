@@ -1,3 +1,4 @@
+
 package pt.utp.estg.pp.printhub.entity;
 
 import jakarta.persistence.*;
@@ -7,21 +8,21 @@ import java.math.BigDecimal;
 @Table(name = "materiais")
 public class Material {
 
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-     @Column(nullable = false, length = 100)
-    private String nome;
+    @Column(name = "nome", nullable = false, length = 100)
+    private String name;
 
-     @Column(name="preco_por_grama", nullable = false, precision = 10, scale = 4)
-    private BigDecimal precoPorGrama;
+    @Column(name = "preco_por_grama", nullable = false, precision = 10, scale = 4)
+    private BigDecimal pricePerGram;
 
-     @Column(name = "densidade", nullable = false, precision = 10, scale = 3)
-    private BigDecimal densidade;
+    @Column(name = "densidade", nullable = false, precision = 10, scale = 3)
+    private BigDecimal density;
 
-     @Column(name="ativo", nullable = false)
-     private Boolean ativo = true;
+    @Column(name = "ativo", nullable = false)
+    private Boolean active = true;
 
     public Material() {
     }
@@ -34,35 +35,35 @@ public class Material {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public BigDecimal getPrecoPorGrama() {
-        return precoPorGrama;
+    public BigDecimal getPricePerGram() {
+        return pricePerGram;
     }
 
-    public void setPrecoPorGrama(BigDecimal precoPorGrama) {
-        this.precoPorGrama = precoPorGrama;
+    public void setPricePerGram(BigDecimal pricePerGram) {
+        this.pricePerGram = pricePerGram;
     }
 
-    public BigDecimal getDensidade() {
-        return densidade;
+    public BigDecimal getDensity() {
+        return density;
     }
 
-    public void setDensidade(BigDecimal densidade) {
-        this.densidade = densidade;
+    public void setDensity(BigDecimal density) {
+        this.density = density;
     }
 
-    public Boolean getAtivo() {
-        return ativo;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
