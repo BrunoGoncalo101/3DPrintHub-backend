@@ -32,7 +32,7 @@ public class FicheiroModelo {
     @Column(name = "utilizador_id", nullable = false)
     private int utilizadorId;
 
-    @Column(name = "cirado_em", nullable = false, updatable = false)
+    @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
 
     @PrePersist
