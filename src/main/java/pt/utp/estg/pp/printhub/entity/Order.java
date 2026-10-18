@@ -1,0 +1,94 @@
+package pt.utp.estg.pp.printhub.entity;
+
+import jakarta.persistence.*;
+import pt.utp.estg.pp.printhub.model.OrderStatus;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name="encomendas")
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    // TODO: trocar por @ManyToOne User quando a tabela utilizadores (Miguel) existir
+    @Column(name = "utilizador_id", nullable = false)
+    private Integer userId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false, length = 30)
+    private OrderStatus status = OrderStatus.PENDING_PAYMENT;
+
+    @Column(name = "total", nullable = false, precision = 10, scale = 2)
+    private BigDecimal total = BigDecimal.ZERO;
+
+    @Column(name = "morada_entrega", nullable = false)
+    private String shippingAddress;
+
+    @Column(name = "criada_em", nullable = false)
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLine> lines = new ArrayList<>();
+
+    public Order() {
+    }
+
+    @PrePersist
+    void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void addLine(OrderLine line) {
+        lines.add(line);
+        line.setOrder(this);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<OrderLine> getLines() {
+        return lines;
+    }
+}
