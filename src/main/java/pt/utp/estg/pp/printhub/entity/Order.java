@@ -15,9 +15,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // TODO: trocar por @ManyToOne User quando a tabela utilizadores (Miguel) existir
-    @Column(name = "utilizador_id", nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "utilizador_id", nullable = false)
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false, length = 30)
@@ -52,12 +52,12 @@ public class Order {
         return id;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public OrderStatus getStatus() {

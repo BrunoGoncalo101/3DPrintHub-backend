@@ -10,9 +10,9 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // TODO: trocar por @ManyToOne User quando a tabela utilizadores (Miguel fazer) existir
-    @Column(name = "utilizador_id", nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "utilizador_id", nullable = false)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false)
@@ -36,12 +36,12 @@ public class CartItem {
         return id;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Product getProduct() {
