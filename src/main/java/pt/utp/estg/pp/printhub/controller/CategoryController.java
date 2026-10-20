@@ -4,8 +4,8 @@ package pt.utp.estg.pp.printhub.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pt.utp.estg.pp.printhub.entity.Category;
-import pt.utp.estg.pp.printhub.repository.CategoryRepository;
+import pt.utp.estg.pp.printhub.dto.CategoryDTO;
+import pt.utp.estg.pp.printhub.service.CategoryService;
 
 import java.util.List;
 
@@ -13,14 +13,14 @@ import java.util.List;
 @RequestMapping("/categorias")
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping
-    public List<Category> listCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryDTO> listCategories() {
+        return categoryService.listCategories();
     }
 }
