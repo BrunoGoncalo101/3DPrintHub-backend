@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pt.utp.estg.pp.printhub.dto.AddCartItemRequest;
 import pt.utp.estg.pp.printhub.dto.CartResponse;
+import pt.utp.estg.pp.printhub.dto.UpdateCartItemRequest;
 import pt.utp.estg.pp.printhub.service.CartService;
 
 @RestController
@@ -51,5 +52,13 @@ public class CartController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "É preciso iniciar sessão.");
         }
         return Integer.valueOf(jwt.getSubject());
+    }
+
+    @PatchMapping("/itens/{id}")
+    @Operation(summary = "Alterar quantidade", description = "Muda a quantidade de um item do carrinho (1 a 10).")
+    public CartResponse updateQuantity(@AuthenticationPrincipal Jwt jwt,
+                                       @PathVariable Integer id,
+                                       @Valid @RequestBody UpdateCartItemRequest request) {
+        return cartService.updateQuantity(currentUserId(jwt), id, request);
     }
 }

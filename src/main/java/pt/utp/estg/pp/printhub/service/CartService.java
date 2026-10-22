@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pt.utp.estg.pp.printhub.dto.AddCartItemRequest;
 import pt.utp.estg.pp.printhub.dto.CartItemResponse;
 import pt.utp.estg.pp.printhub.dto.CartResponse;
+import pt.utp.estg.pp.printhub.dto.UpdateCartItemRequest;
 import pt.utp.estg.pp.printhub.entity.CartItem;
 import pt.utp.estg.pp.printhub.entity.Color;
 import pt.utp.estg.pp.printhub.entity.Material;
@@ -124,5 +125,16 @@ public class CartService {
                 unitPrice,
                 subtotal
         );
+    }
+
+    /** Altera a quantidade de um item do carrinho, só se pertencer ao utilizador. */
+    @Transactional
+    public CartResponse updateQuantity(Integer userId, Integer itemId, UpdateCartItemRequest request) {
+        CartItem item = cartItemRepository.findByIdAndUserId(itemId, userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item não encontrado no carrinho."));
+
+        item.setQuantity(request.quantity());
+        cartItemRepository.save(item);
+        return getCart(userId);
     }
 }
