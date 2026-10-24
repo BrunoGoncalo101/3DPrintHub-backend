@@ -15,7 +15,7 @@ import pt.utp.estg.pp.printhub.repository.UserRepository;
 
 import java.time.LocalDateTime;
 
-/** Registo, login e dados do utilizador com sessão iniciada. */
+/** Registo e login de utilizadores. */
 @Service
 public class AuthService {
 
@@ -62,12 +62,5 @@ public class AuthService {
 
         String token = tokenService.generateToken(user);
         return new LoginResponse(token, "Bearer", tokenService.getExpirationSeconds(), UserResponse.from(user));
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponse getCurrentUser(Integer userId) {
-        return userRepository.findById(userId)
-                .map(UserResponse::from)
-                .orElseThrow(() -> new InvalidCredentialsException("Sessão inválida."));
     }
 }

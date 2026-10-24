@@ -5,11 +5,25 @@ import pt.utp.estg.pp.printhub.model.Role;
 
 import java.time.LocalDateTime;
 
-public record UserResponse(Integer id, String name, String email, Role role,
-                           String phone, LocalDateTime createdAt) {
+public record UserResponse(
+        Integer id,
+        String name,
+        String email,
+        Role role,
+        String phone,
+        String address,
+        LocalDateTime createdAt
+) {
 
     public static UserResponse from(User user) {
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(),
-                user.getRole(), user.getPhone(), user.getCreatedAt());
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getPhone(),
+                user.getAddress(),
+                user.getCreatedAt()
+        );
     }
 }
