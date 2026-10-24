@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,8 +24,8 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Configuração do Spring Security com JWT.
- * O filtro do Spring valida o token do cabeçalho Authorization em todos os pedidos.
- * As rotas continuam abertas até à tarefa das rotas protegidas (S3), exceto /utilizadores/me.
+ * O catálogo, o registo e o login são públicos; /admin/** é exclusivo de administradores;
+ * todas as outras rotas exigem sessão iniciada.
  */
 @Configuration
 public class SecurityConfig {
@@ -35,8 +36,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/utilizadores/me").authenticated()
-                        .anyRequest().permitAll())
+                        // Documentação da API e página de erro
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll()
+                        // Registo e login
+                        .requestMatchers("/auth/**").permitAll()
+                        // Catálogo público (só leitura)
+                        .requestMatchers(HttpMethod.GET, "/produtos/**", "/categorias/**", "/materiais/**", "/cores/**").permitAll()
+                        // Administração: só ADMIN
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Tudo o resto exige sessão iniciada
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
