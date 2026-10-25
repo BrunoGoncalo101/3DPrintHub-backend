@@ -9,9 +9,11 @@ import pt.utp.estg.pp.printhub.entity.ModelFile;
 import pt.utp.estg.pp.printhub.exception.FileStorageException;
 import pt.utp.estg.pp.printhub.model.FileFormat;
 import pt.utp.estg.pp.printhub.repository.ModelFileRepository;
+import pt.utp.estg.pp.printhub.util.StlParser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -67,8 +69,21 @@ public class ModelFileService {
         modelFile.setOriginalName(originalName);
         modelFile.setFilePath(savedFileName);
         modelFile.setSizeBytes((int) file.getSize());
-        modelFile.setFormat(FileFormat.valueOf(String.valueOf(format)));
+        modelFile.setFormat(format);
         modelFile.setUserId(userId);
+
+        if (format == FileFormat.STL) {
+            try (InputStream inputStream = file.getInputStream()) {
+                StlParser.StlAnalysisResult analysis = StlParser.parseBinaryStl(inputStream);
+                modelFile.setVolumeCm3(BigDecimal.valueOf(analysis.volumeCm3()));
+                modelFile.setDimensionX(BigDecimal.valueOf(analysis.widthX()));
+                modelFile.setDimensionY(BigDecimal.valueOf(analysis.depthY()));
+                modelFile.setDimensionZ(BigDecimal.valueOf(analysis.heightZ()));
+            } catch (Exception e) {
+                deleteQuietly(targetPath); // Evita ficheiro órfão se a leitura do STL falhar
+                throw new InvalidFileException("Falha ao analisar a geometria do ficheiro STL: " + e.getMessage());
+            }
+        }
 
         try {
             return repository.save(modelFile);
