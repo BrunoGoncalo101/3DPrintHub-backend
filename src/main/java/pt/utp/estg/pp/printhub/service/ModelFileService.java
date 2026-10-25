@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import pt.utp.estg.pp.printhub.dto.QuoteResponse;
 import pt.utp.estg.pp.printhub.exception.InvalidFileException;
 import pt.utp.estg.pp.printhub.entity.ModelFile;
 import pt.utp.estg.pp.printhub.exception.FileStorageException;
@@ -14,6 +15,7 @@ import pt.utp.estg.pp.printhub.util.StlParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -91,6 +93,46 @@ public class ModelFileService {
             deleteQuietly(targetPath); // Evita ficheiros órfãos no disco se a BD falhar
             throw e;
         }
+    }
+
+
+    /**
+     * Calcula o orçamento estimado da impressão com base no volume do ficheiro, densidade e preço do material.
+     */
+    public QuoteResponse calculateQuote(Integer fileId, Integer materialId, int infillPercent) throws InvalidFileException {
+        ModelFile modelFile = repository.findById(fileId)
+                .orElseThrow(() -> new InvalidFileException("Ficheiro não encontrado com o id: " + fileId));
+
+        if(modelFile.getVolumeCm3() == null){
+            throw new InvalidFileException("O ficheiro selecionado não possui o volume calculado");
+        }
+
+        double densityGcm3 = 1.24;  //ex: PLA
+        double pricePerGram = 0.05; //0.05 €/g
+        String materialName = "PLA";
+
+        double volume = modelFile.getVolumeCm3().doubleValue();
+        double infillFactor = infillPercent / 100.0;
+
+        // Peso (g) = Volume (cm³) * Densidade (g/cm³) * Infill (%)
+        double weightGrams = volume * densityGcm3 * infillFactor;
+
+        // Preço (€) = Peso (g) * Preço por grama (€/g)
+        double price = weightGrams * pricePerGram;
+
+        BigDecimal estimatedWeight = BigDecimal.valueOf(weightGrams).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal totalPrice = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP);
+
+        return new QuoteResponse(
+                modelFile.getId(),
+                modelFile.getOriginalName(),
+                modelFile.getVolumeCm3(),
+                materialId,
+                materialName,
+                infillPercent,
+                estimatedWeight,
+                totalPrice
+        );
     }
 
     private void saveToDisk(MultipartFile file, Path targetPath) {
