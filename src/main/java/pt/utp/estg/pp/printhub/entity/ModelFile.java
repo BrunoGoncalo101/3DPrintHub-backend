@@ -31,6 +31,15 @@ public class ModelFile {
     @Column(name = "volume_cm3", precision = 10, scale = 2)
     private BigDecimal volumeCm3;
 
+    @Column(name ="dimensao_x", precision = 10, scale = 2)
+    private BigDecimal dimensionX;
+
+    @Column(name = "dimensao_y", precision = 10, scale = 2)
+    private BigDecimal dimensionY;
+
+    @Column(name = "dimensao_z", precision = 10, scale = 2)
+    private BigDecimal dimensionZ;
+
     @Column(name = "utilizador_id", nullable = false)
     private Integer userId;
 
@@ -86,6 +95,30 @@ public class ModelFile {
 
     public void setVolumeCm3(BigDecimal volumeCm3) {
         this.volumeCm3 = volumeCm3;
+    }
+
+    public BigDecimal getDimensionX() {
+        return dimensionX;
+    }
+
+    public void setDimensionX(BigDecimal dimensionX) {
+        this.dimensionX = dimensionX;
+    }
+
+    public BigDecimal getDimensionY() {
+        return dimensionY;
+    }
+
+    public void setDimensionY(BigDecimal dimensionY) {
+        this.dimensionY = dimensionY;
+    }
+
+    public BigDecimal getDimensionZ() {
+        return dimensionZ;
+    }
+
+    public void setDimensionZ(BigDecimal dimensionZ) {
+        this.dimensionZ = dimensionZ;
     }
 
     public Integer getUserId() {
